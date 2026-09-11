@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Organizer Roster &amp; Admin | AI QR Quest | Swayambhu Tech Fest | JNEC</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .admin-page { padding: 2rem 0 4rem; }
+    .admin-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .admin-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .admin-stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .admin-stat-card .val { font-size: 1.8rem; font-weight: 700; font-family: var(--font-mono); color: var(--color-cyan); }
+    .admin-stat-card .lbl { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+    .admin-controls-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 260px;
+      position: relative;
+    }
+    .search-box input {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      color: var(--text-primary);
+      font-size: 0.92rem;
+      outline: none;
+    }
+    .search-box input:focus {
+      border-color: var(--color-cyan);
+      box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.2);
+    }
+    .search-icon { position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+
+    .btn-group { display: flex; gap: 0.65rem; flex-wrap: wrap; }
+    .btn-export {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+    }
+    .btn-export:hover {
+      box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+      color: #ffffff;
+    }
+
+    /* Table Styling */
+    .table-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow-x: auto;
+      box-shadow: var(--shadow-card);
+    }
+    .roster-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      text-align: left;
+    }
+    .roster-table th {
+      background: rgba(8, 12, 28, 0.9);
+      padding: 1rem 1.25rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-subtle);
+      white-space: nowrap;
+    }
+    .roster-table td {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text-primary);
+    }
+    .roster-table tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .team-id-badge {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--color-cyan);
+      background: rgba(0, 240, 255, 0.1);
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-cyan);
+      display: inline-block;
+    }
+    .btn-delete {
+      background: rgba(244, 63, 94, 0.12);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      color: #fb7185;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.75rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .btn-delete:hover {
+      background: rgba(244, 63, 94, 0.25);
+      color: #ffffff;
+    }
+
+    /* PIN Gate Overlay */
+    .pin-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 6, 16, 0.95);
+      backdrop-filter: blur(16px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .pin-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-cyan);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      box-shadow: var(--shadow-modal);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Admin PIN Gate Overlay -->
+  <div class="pin-overlay" id="pin-overlay">
+    <div class="pin-card">
+      <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🔐</div>
+      <h2 style="margin-bottom: 0.5rem;">Organizer Access</h2>
+      <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 1.5rem;">
+        Please enter the organizer PIN to view the team directory and export data.
+      </p>
+      <form id="pin-form">
+        <input type="password" id="pin-input" class="form-input" placeholder="Enter PIN (Default: jnec2026)" style="text-align: center; font-size: 1.1rem; letter-spacing: 2px; margin-bottom: 1rem;" required autofocus>
+        <div id="pin-error" style="color: #fb7185; font-size: 0.82rem; margin-bottom: 1rem; display: none;">Invalid PIN. Please try again.</div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Unlock Dashboard</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner" style="display: flex; justify-content: space-between; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <div class="brand-emblem">⚡</div>
+        <div>
+          <h1 style="font-size: 1.4rem;">AI QR <span style="color: var(--color-cyan);">QUEST</span></h1>
+          <span style="font-size: 0.85rem; color: var(--text-secondary);">Organizer Roster &amp; Command Center</span>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <a href="/" class="btn btn-secondary">
+          <span>←</span> Back to Registration Portal
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container admin-page">
+
+    <!-- Stats Grid -->
+    <div class="admin-stats-grid">
+      <div class="admin-stat-card">
+        <div style="font-size: 2rem;">📋</div>
+        <div>
+          <div class="val" id="stat-total">0</div>
+          <div class="lbl">Total Registered Teams</div>
+        </div>
+      </div>
+      <div class="admin-stat-card">
+        <div style="font-size: 2rem;">👤</div>
+        <div>
+          <div class="val" id="stat-solo" style="color: #c4b5fd;">0</div>
+          <div class="lbl">Solo Participants</div>
+        </div>
+      </div>
+      <div class="admin-stat-card">
+        <div style="font-size: 2rem;">👥</div>
+        <div>
+          <div class="val" id="stat-squad" style="color: #6ee7b7;">0</div>
+          <div class="lbl">Squads (2–3 Members)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controls Card -->
+    <div class="admin-controls-card">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="roster-search" placeholder="Search by Team ID, Leader, Team Name, Phone, or College...">
+      </div>
+      <div class="btn-group">
+        <button type="button" class="btn btn-secondary" id="refresh-btn">
+          <span>🔄</span> Refresh
+        </button>
+        <a href="/api/admin/export-csv" class="btn btn-export" id="export-csv-btn">
+          <span>📥</span> Export to CSV (Excel)
+        </a>
+        <button type="button" class="btn" id="clear-all-btn" style="background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.4); color: #fb7185;" title="Clear all registrations and reset IDs to QRQ-0001">
+          <span>🗑️</span> Clear All
+        </button>
+      </div>
+    </div>
+
+    <!-- Table Container -->
+    <div class="table-container">
+      <table class="roster-table" id="roster-table">
+        <thead>
+          <tr>
+            <th>Team ID</th>
+            <th>Type</th>
+            <th>Team Name</th>
+            <th>Leader</th>
+            <th>Members</th>
+            <th>Mobile</th>
+            <th>Email</th>
+            <th>College / Dept</th>
+            <th>Registered At</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="roster-tbody">
+          <tr>
+            <td colspan="10" style="text-align: center; color: var(--text-muted); padding: 2rem;">Loading teams...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <script>
+    const DEFAULT_PIN = 'jnec2026';
+    const pinOverlay = document.getElementById('pin-overlay');
+    const pinForm = document.getElementById('pin-form');
+    const pinInput = document.getElementById('pin-input');
+    const pinError = document.getElementById('pin-error');
+
+    let currentTeams = [];
+
+    // Session PIN unlock check
+    if (sessionStorage.getItem('AI_QR_ADMIN_UNLOCKED') === 'true') {
+      pinOverlay.style.display = 'none';
+      loadTeams();
+    }
+
+    pinForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const enteredPin = pinInput.value.trim();
+      if (enteredPin === DEFAULT_PIN) {
+        sessionStorage.setItem('AI_QR_ADMIN_UNLOCKED', 'true');
+        sessionStorage.setItem('AI_QR_ADMIN_PIN', enteredPin);
+        pinOverlay.style.display = 'none';
+        loadTeams();
+      } else {
+        pinError.style.display = 'block';
+      }
+    });
+
+    async function loadTeams() {
+      try {
+        const [teamsRes, statsRes] = await Promise.all([
+          fetch('/api/teams'),
+          fetch('/api/stats')
+        ]);
+
+        const teamsData = await teamsRes.json();
+        const statsData = await statsRes.json();
+
+        if (statsData.success && statsData.stats) {
+          document.getElementById('stat-total').textContent = statsData.stats.totalTeams;
+          document.getElementById('stat-solo').textContent = statsData.stats.soloCount;
+          document.getElementById('stat-squad').textContent = statsData.stats.teamCount;
+        }
+
+        if (teamsData.success) {
+          currentTeams = teamsData.teams;
+          renderTeams(currentTeams);
+        }
+      } catch (err) {
+        console.error('Error loading teams:', err);
+      }
+    }
+
+    function renderTeams(teams) {
+      const tbody = document.getElementById('roster-tbody');
+      if (!teams || teams.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; color: var(--text-muted); padding: 2rem;">No teams registered yet.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = teams.map(t => {
+        const members = [t.member1];
+        if (t.member2) members.push(t.member2);
+        if (t.member3) members.push(t.member3);
+
+        const typeBadge = t.registrationType === 'solo'
+          ? '<span class="badge badge-violet">Solo</span>'
+          : '<span class="badge badge-cyan">Team</span>';
+
+        return `
+          <tr>
+            <td><span class="team-id-badge">${t.teamId}</span></td>
+            <td>${typeBadge}</td>
+            <td><strong>${escapeHtml(t.teamName)}</strong></td>
+            <td>${escapeHtml(t.teamLeader)}</td>
+            <td><small>${escapeHtml(members.join(', '))}</small></td>
+            <td>${escapeHtml(t.mobile)}</td>
+            <td><small>${escapeHtml(t.email)}</small></td>
+            <td><small>${escapeHtml(t.college)}</small></td>
+            <td><small>${new Date(t.registeredAt).toLocaleString()}</small></td>
+            <td>
+              <button type="button" class="btn-delete" onclick="deleteTeam('${t.teamId}')" title="Delete Team">Delete</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // Search filter
+    document.getElementById('roster-search').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      if (!q) {
+        renderTeams(currentTeams);
+        return;
+      }
+
+      const filtered = currentTeams.filter(t => {
+        return (
+          t.teamId.toLowerCase().includes(q) ||
+          t.teamName.toLowerCase().includes(q) ||
+          t.teamLeader.toLowerCase().includes(q) ||
+          (t.member2 && t.member2.toLowerCase().includes(q)) ||
+          (t.member3 && t.member3.toLowerCase().includes(q)) ||
+          t.mobile.includes(q) ||
+          t.email.toLowerCase().includes(q) ||
+          t.college.toLowerCase().includes(q)
+        );
+      });
+      renderTeams(filtered);
+    });
+
+    document.getElementById('refresh-btn').addEventListener('click', loadTeams);
+
+    // Delete Team
+    window.deleteTeam = async function(teamId) {
+      if (!confirm(`Are you sure you want to delete team ${teamId}?`)) return;
+
+      const pin = sessionStorage.getItem('AI_QR_ADMIN_PIN') || DEFAULT_PIN;
+      try {
+        const res = await fetch(`/api/teams/${teamId}`, {
+          method: 'DELETE',
+          headers: { 'x-admin-pin': pin }
+        });
+        const data = await res.json();
+        if (data.success) {
+          loadTeams();
+        } else {
+          alert(data.error || 'Failed to delete team');
+        }
+      } catch (err) {
+        alert('Delete request failed: ' + err.message);
+      }
+    };
+
+    // Clear All Teams
+    document.getElementById('clear-all-btn').addEventListener('click', async () => {
+      const pin = prompt('⚠️ DANGER: This will delete ALL registered teams from the SQLite database and reset Team IDs back to QRQ-0001.\n\nEnter Organizer PIN to confirm:');
+      if (!pin) return;
+
+      try {
+        const res = await fetch('/api/admin/reset-database', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-admin-pin': pin }
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert('✅ All registrations have been cleared! Next ID will be QRQ-0001.');
+          loadTeams();
+        } else {
+          alert('❌ ' + (data.error || 'Failed to clear database'));
+        }
+      } catch (err) {
+        alert('Reset request failed: ' + err.message);
+      }
+    });
+  </script>
+</body>
+</html>

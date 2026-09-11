@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI QR Quest — Team Registration | Swayambhu Tech Fest | JNEC</title>
+  <meta name="description" content="Official Team Registration Dashboard for AI QR Quest at Swayambhu Tech Fest, JNEC. Organized by the Department of Artificial Intelligence & Data Science (AI&DS).">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/registration.css">
+</head>
+<body>
+
+  <!-- ========================================================================
+       1. Header
+       ======================================================================== -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <div class="brand-block">
+        <div class="brand-emblem" aria-hidden="true">⚡</div>
+        <div class="brand-title-group">
+          <h1>AI QR <span class="accent-text">QUEST</span></h1>
+          <span class="brand-subtitle">Campus Treasure Hunt Registration Portal</span>
+        </div>
+      </div>
+
+      <div class="header-meta-tags" aria-label="Event context">
+        <div class="live-counter-pill" id="live-teams-counter" title="Live SQLite Database Count">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          <span id="live-count-num">0</span> Teams Registered
+        </div>
+        <div class="fest-pill" title="College Technical Fest">
+          <span aria-hidden="true">🏛️</span>
+          <span>Swayambhu Tech Fest | JNEC</span>
+        </div>
+        <div class="dept-pill" title="Organizing Department">
+          <span aria-hidden="true">🤖</span>
+          <span>AI &amp; DS Department</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       Main Content Area
+       ======================================================================== -->
+  <main class="container registration-page" role="main">
+
+    <!-- ======================================================================
+         2. Event Overview Card
+         ====================================================================== -->
+    <section class="event-overview-card" aria-labelledby="overview-heading">
+      <div class="overview-header">
+        <div class="overview-title-block">
+          <span class="badge badge-cyan" style="margin-bottom: 0.5rem;">Official Event Brief</span>
+          <h2 id="overview-heading">AI QR Quest</h2>
+          <p class="overview-objective">
+            Test technical problem-solving, logical reasoning, and AI/DS core concepts through a high-energy campus QR code treasure hunt.
+          </p>
+        </div>
+        <div>
+          <span class="badge badge-emerald">Registrations Open</span>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div class="overview-stats-grid">
+        <div class="stat-box">
+          <div class="stat-icon cyan" aria-hidden="true">📍</div>
+          <div>
+            <span class="stat-label">Venue</span>
+            <span class="stat-value">JNEC Campus</span>
+          </div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-icon violet" aria-hidden="true">🎓</div>
+          <div>
+            <span class="stat-label">Department</span>
+            <span class="stat-value">AI &amp; DS</span>
+          </div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-icon cyan" aria-hidden="true">👥</div>
+          <div>
+            <span class="stat-label">Registration</span>
+            <span class="stat-value">Solo / Team</span>
+          </div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-icon green" aria-hidden="true">⚡</div>
+          <div>
+            <span class="stat-label">Max Team Size</span>
+            <span class="stat-value">Up to 3 Members</span>
+          </div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-icon amber" aria-hidden="true">💰</div>
+          <div>
+            <span class="stat-label">Event Budget</span>
+            <span class="stat-value">₹8,000</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         3. Team Registration Form
+         ====================================================================== -->
+    <section class="form-card" aria-labelledby="form-heading">
+      <div class="form-header">
+        <div>
+          <h2 id="form-heading">Team Registration</h2>
+          <p class="form-subtitle">Fill in team and member credentials to receive your official Quest Team ID.</p>
+        </div>
+
+        <!-- Registration Type Segmented Switcher -->
+        <div class="segmented-control" role="group" aria-label="Select Registration Type">
+          <button type="button" class="segment-btn" id="type-solo-btn" aria-pressed="false">
+            <span aria-hidden="true">👤</span> Solo (1 Member)
+          </button>
+          <button type="button" class="segment-btn active" id="type-team-btn" aria-pressed="true">
+            <span aria-hidden="true">👥</span> Team (2–3 Members)
+          </button>
+        </div>
+      </div>
+
+      <form id="team-registration-form" novalidate>
+        <input type="hidden" id="registration-type-input" name="registrationType" value="team">
+
+        <div class="form-grid">
+          <!-- Team Name -->
+          <div class="form-group form-group-full">
+            <label for="team-name" class="form-label">
+              <span>Team Name <span class="required-star">*</span></span>
+              <span class="field-hint">Choose a unique squad or participant identifier</span>
+            </label>
+            <div class="input-wrapper">
+              <span class="input-icon" aria-hidden="true">🏷️</span>
+              <input type="text" id="team-name" name="teamName" class="form-input" placeholder="e.g. Neural Hackers, Quantum Voyagers" required maxlength="50" autocomplete="off">
+            </div>
+            <div class="error-feedback" id="team-name-error"></div>
+          </div>
+
+          <!-- Team Leader Name -->
+          <div class="form-group">
+            <label for="team-leader" class="form-label">
+              <span>Team Leader Name <span class="required-star">*</span></span>
+            </label>
+            <div class="input-wrapper">
+              <span class="input-icon" aria-hidden="true">👑</span>
+              <input type="text" id="team-leader" name="teamLeader" class="form-input" placeholder="e.g. Aarav Sharma" required autocomplete="name">
+            </div>
+            <div class="error-feedback" id="team-leader-error"></div>
+          </div>
+
+          <!-- College / Department -->
+          <div class="form-group">
+            <label for="college-dept" class="form-label">
+              <span>College &amp; Department <span class="required-star">*</span></span>
+            </label>
+            <div class="input-wrapper">
+              <span class="input-icon" aria-hidden="true">🏛️</span>
+              <input type="text" id="college-dept" name="collegeDept" class="form-input" list="college-dept-presets" placeholder="e.g. JNEC - AI & DS" required>
+              <datalist id="college-dept-presets">
+                <option value="JNEC - Artificial Intelligence & Data Science (AI&DS)">
+                <option value="JNEC - Computer Science & Engineering (CSE)">
+                <option value="JNEC - Information Technology (IT)">
+                <option value="JNEC - Electronics & Telecommunication (ENTC)">
+                <option value="JNEC - Mechanical Engineering">
+                <option value="JNEC - Civil Engineering">
+                <option value="Other College / University">
+              </datalist>
+            </div>
+            <div class="error-feedback" id="college-dept-error"></div>
+          </div>
+
+          <!-- Mobile Number -->
+          <div class="form-group">
+            <label for="mobile-number" class="form-label">
+              <span>Mobile Number <span class="required-star">*</span></span>
+              <span class="field-hint">10-digit WhatsApp/SMS</span>
+            </label>
+            <div class="input-wrapper">
+              <span class="input-icon" aria-hidden="true">📱</span>
+              <input type="tel" id="mobile-number" name="mobile" class="form-input" placeholder="9876543210" pattern="[0-9]{10}" maxlength="10" required autocomplete="tel">
+            </div>
+            <div class="error-feedback" id="mobile-error"></div>
+          </div>
+
+          <!-- Email ID -->
+          <div class="form-group">
+            <label for="email-id" class="form-label">
+              <span>Email ID <span class="required-star">*</span></span>
+              <span class="field-hint">For confirmation &amp; instructions</span>
+            </label>
+            <div class="input-wrapper">
+              <span class="input-icon" aria-hidden="true">✉️</span>
+              <input type="email" id="email-id" name="email" class="form-input" placeholder="leader@example.com" required autocomplete="email">
+            </div>
+            <div class="error-feedback" id="email-error"></div>
+          </div>
+
+          <!-- Dynamic Team Roster Section -->
+          <div class="roster-fieldset" id="roster-section">
+            <div class="roster-header">
+              <span class="roster-title">
+                <span aria-hidden="true">📋</span> Team Roster Details
+              </span>
+              <span class="field-hint" id="roster-hint">Team mode: 2 to 3 members. Member 3 is optional.</span>
+            </div>
+
+            <div class="member-fields-grid">
+              <!-- Member 1 (Leader) -->
+              <div class="form-group member-slot" id="member-1-slot">
+                <label for="member-1" class="form-label">
+                  <span>Member 1 Name (Leader) <span class="required-star">*</span></span>
+                </label>
+                <div class="input-wrapper">
+                  <span class="input-icon" aria-hidden="true">1️⃣</span>
+                  <input type="text" id="member-1" name="member1" class="form-input" placeholder="Leader full name" required>
+                </div>
+                <div class="error-feedback" id="member-1-error"></div>
+              </div>
+
+              <!-- Member 2 -->
+              <div class="form-group member-slot" id="member-2-slot">
+                <label for="member-2" class="form-label">
+                  <span>Member 2 Name <span class="required-star">*</span></span>
+                </label>
+                <div class="input-wrapper">
+                  <span class="input-icon" aria-hidden="true">2️⃣</span>
+                  <input type="text" id="member-2" name="member2" class="form-input" placeholder="Member 2 full name" required>
+                </div>
+                <div class="error-feedback" id="member-2-error"></div>
+              </div>
+
+              <!-- Member 3 (Optional) -->
+              <div class="form-group member-slot" id="member-3-slot">
+                <label for="member-3" class="form-label">
+                  <span>Member 3 Name</span>
+                  <span class="badge badge-violet" style="font-size: 0.65rem;">Optional</span>
+                </label>
+                <div class="input-wrapper">
+                  <span class="input-icon" aria-hidden="true">3️⃣</span>
+                  <input type="text" id="member-3" name="member3" class="form-input" placeholder="Member 3 full name (Optional)">
+                </div>
+                <div class="error-feedback" id="member-3-error"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button & Privacy Note -->
+          <div class="form-submit-row">
+            <div class="form-privacy-note">
+              <span aria-hidden="true">🔒</span>
+              <span>Unique Team ID will be assigned upon confirmation.</span>
+            </div>
+
+            <button type="submit" class="btn btn-primary submit-btn" id="submit-reg-btn">
+              <span class="spinner" aria-hidden="true"></span>
+              <span class="btn-text">Register Team</span>
+              <span aria-hidden="true">→</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <!-- ========================================================================
+       5. Registration Success Dialog / Modal
+       ======================================================================== -->
+  <dialog class="success-dialog" id="registration-success-dialog" aria-labelledby="success-heading" aria-modal="true">
+    <div class="success-card">
+      <div class="success-icon-wrap" aria-hidden="true">✓</div>
+      
+      <h3 class="success-title" id="success-heading">Registration Successful</h3>
+      <p class="success-subtitle">Your team has been registered for AI QR Quest at Swayambhu Tech Fest!</p>
+
+      <!-- Unique Team ID Display Box -->
+      <div class="team-id-box">
+        <span class="team-id-label">Generated Team ID</span>
+        <div class="team-id-value" id="generated-team-id">QRQ-0001</div>
+        <button type="button" class="copy-id-btn" id="copy-team-id-btn" title="Copy Team ID to Clipboard">
+          <span class="icon" aria-hidden="true">📋</span> Copy Team ID
+        </button>
+      </div>
+
+      <!-- Registration Summary -->
+      <div class="success-roster-summary">
+        <div class="summary-row">
+          <span class="summary-label">Team ID:</span>
+          <span class="summary-val" id="summary-team-id">-</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Team Name:</span>
+          <span class="summary-val" id="summary-team-name">-</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Leader:</span>
+          <span class="summary-val" id="summary-leader">-</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Squad:</span>
+          <span class="summary-val" id="summary-squad">-</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Contact:</span>
+          <span class="summary-val" id="summary-contact">-</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">College / Dept:</span>
+          <span class="summary-val" id="summary-college">-</span>
+        </div>
+      </div>
+
+      <!-- Modal Actions -->
+      <div class="success-actions">
+        <a id="whatsapp-share-btn" class="btn btn-whatsapp" target="_blank" rel="noopener noreferrer">
+          <span class="icon" aria-hidden="true">📲</span> Share to WhatsApp
+        </a>
+        <button type="button" class="btn btn-secondary" id="register-another-btn">
+          <span>➕</span> Register Another Team
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ========================================================================
+       Footer
+       ======================================================================== -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p><strong>AI QR Quest</strong> • Swayambhu Tech Fest • JNEC</p>
+      <p>Department of Artificial Intelligence &amp; Data Science (AI&DS) • Academic Year 2026</p>
+      <div style="margin-top: 0.5rem;">
+        <a href="/admin" style="color: var(--text-muted); font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.35rem;">
+          <span>🔐</span> Organizer Admin Portal
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/registrationService.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

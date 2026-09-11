@@ -1,0 +1,27 @@
+{
+  "name": "ai-qr-quest-dashboard",
+  "version": "1.0.0",
+  "description": "AI QR Quest Team Registration Dashboard for Swayambhu Tech Fest, JNEC (AI&DS Department)",
+  "main": "server.js",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/api.test.js",
+    "reset-db": "node -e \"require('./database/db').clearAllTeams(); console.log('✅ SQLite database cleared! Next Team ID will be QRQ-0001');\""
+  },
+  "keywords": [
+    "ai",
+    "qr-quest",
+    "tech-fest",
+    "jnec",
+    "registration"
+  ],
+  "author": "Department of AI & DS, JNEC",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}
