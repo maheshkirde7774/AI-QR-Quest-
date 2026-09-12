@@ -73,7 +73,7 @@ Official Full-Stack Team Registration Portal for **AI QR Quest** at **Swayambhu 
 
 ### 6. 🔐 Organizer Admin Portal & CSV Export (`/admin`)
 - Accessible at: **`http://localhost:3000/admin`**
-- **Security PIN**: Protected with an organizer passcode (default: `jnec2026`).
+- **Security PIN**: Protected with an organizer passcode (default:jnec2026).
 - **Live Search**: Instant real-time filtering by Team ID, Leader, Team Name, Phone, or College.
 - **📥 1-Click Excel / CSV Export**: Downloads complete roster with UTF-8 formatting for Excel / Google Sheets (`/api/admin/export-csv`).
 - **Delete Management**: Organizers can remove test entries directly from the dashboard.
@@ -122,7 +122,7 @@ npm test
 
 ### 4. Reset / Delete All Registrations
 To wipe test registrations and reset the counter back to `QRQ-0001`:
-- **Via Admin Portal**: Click the red **"🗑️ Clear All"** button at [http://localhost:3000/admin](http://localhost:3000/admin) (PIN: `jnec2026`).
+- **Via Admin Portal**: Click the red **"🗑️ Clear All"** button at [http://localhost:3000/admin](PIN: `XXXX`).
 - **Via Terminal**:
   ```bash
   npm run reset-db
